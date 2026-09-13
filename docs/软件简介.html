@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>伤害显示开关（DamageDisplayToggle） 软件简介</title>
+<style>
+/* ============================================================
+   样式区：禁止修改！
+   本模板是 xiangmujiaocheng 技能的「软件简介」专属模板（清爽文档蓝）。
+   修改此区会破坏所有项目软件简介的视觉统一。
+   ============================================================ */
+:root{--acc:#2563eb;--accbg:#eff6ff;--line:#e2e8f0;--line2:#cbd5e1;--text:#1e293b;--dim:#64748b;--bg2:#f8fafc;--ok:#16a34a;--warn:#d97706;--warnbg:#fffbeb;--warnline:#fde68a}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font:15.5px/1.85 "Microsoft YaHei","PingFang SC","Segoe UI",sans-serif;color:var(--text);background:#fff}
+a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
+code{background:var(--accbg);color:#1d4ed8;border-radius:4px;padding:1px 7px;font-family:Consolas,"Courier New",monospace;font-size:13.5px}
+pre{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:13px 16px;overflow:auto}
+pre code{background:none;color:#0f172a;padding:0}
+.hide{display:none!important}
+
+.hero{background:linear-gradient(180deg,#eef5ff 0%,#ffffff 100%);border-bottom:1px solid var(--line);padding:44px 20px 32px;text-align:center}
+.kind{display:inline-block;background:var(--acc);color:#fff;border-radius:4px;font-size:13px;padding:2px 12px;letter-spacing:2px}
+.hero h1{margin:14px 0 8px;font-size:34px}
+.hero h1 .accent{color:var(--acc)}
+.hero .sub{color:var(--dim);margin:0 auto;max-width:640px;font-size:15.5px}
+
+.toolbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 3px rgba(15,23,42,.05)}
+.toolbar-in{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:10px 20px}
+#searchInput{flex:1 1 240px;border:1px solid var(--line2);border-radius:8px;padding:8px 14px;font-size:14.5px;outline:none;background:var(--bg2)}
+#searchInput:focus{border-color:var(--acc);background:#fff;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line2);background:#fff;color:var(--dim);border-radius:999px;padding:5px 15px;font-size:13.5px;cursor:pointer}
+.chip:hover{border-color:var(--acc);color:var(--acc)}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.count{color:var(--dim);font-size:13px;white-space:nowrap}
+
+.content{max-width:980px;margin:0 auto;padding:30px 20px 70px}
+
+.unit{margin:0 0 38px}
+.group{font-size:12.5px;color:var(--acc);letter-spacing:2px;margin-bottom:4px}
+.unit>h2{margin:0 0 10px;font-size:22px;border-left:4px solid var(--acc);padding-left:12px}
+.lead{color:var(--dim);margin:0 0 14px;font-size:14.5px}
+.unit h3{font-size:16.5px;margin:20px 0 8px}
+
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:13px;margin:16px 0}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:15px 17px;box-shadow:0 1px 2px rgba(15,23,42,.04);transition:.15s}
+.card:hover{border-color:var(--acc);box-shadow:0 4px 14px rgba(37,99,235,.12)}
+.card .icon{font-size:22px}
+.card h4{margin:7px 0 5px;font-size:15.5px;color:var(--acc)}
+.card p{margin:0;color:var(--dim);font-size:13.5px}
+
+.note,.warning{border-radius:8px;padding:12px 16px;margin:14px 0;font-size:14.5px}
+.note{background:var(--accbg);border:1px solid #bfdbfe}
+.warning{background:var(--warnbg);border:1px solid var(--warnline)}
+
+table.data-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:14.5px}
+.data-table th{background:var(--accbg);color:#1d4ed8;text-align:left}
+.data-table th,.data-table td{border:1px solid var(--line);padding:8px 13px}
+.data-table tr:nth-child(even) td{background:#fbfdff}
+
+details.faq{background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:10px 16px;margin:9px 0}
+details.faq summary{cursor:pointer;font-weight:600}
+details.faq[open]{border-color:var(--acc)}
+details.faq .answer{color:var(--dim);padding-top:7px}
+
+.shot{border:2px dashed var(--line2);border-radius:8px;padding:26px;text-align:center;color:var(--dim);font-size:14px;margin:13px 0}
+.badge{display:inline-block;border-radius:4px;padding:1px 10px;font-size:12.5px;margin-right:6px;color:var(--acc);border:1px solid var(--acc)}
+.badge.ok{color:var(--ok);border-color:var(--ok)}
+.badge.warn{color:var(--warn);border-color:var(--warn)}
+.empty{border:1px dashed var(--line2);border-radius:10px;padding:44px;text-align:center;color:var(--dim);margin:20px 0}
+
+.foot{border-top:1px solid var(--line);color:var(--dim);text-align:center;padding:20px;font-size:13px;background:var(--bg2)}
+@media (max-width:640px){.hero h1{font-size:26px}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="kind">软件简介</span>
+  <h1>伤害显示开关 <span class="accent">伤害数字，由你做主</span></h1>
+  <p class="sub">方舟生存进化服务端插件：玩家两条聊天命令自助开关伤害数字，按 SteamID 记忆，重启不丢；关掉数字还能顺手减轻服务器负担。免费使用。</p>
+</header>
+
+<div class="toolbar"><div class="toolbar-in">
+  <input id="searchInput" type="search" placeholder="搜索功能…">
+  <div class="chips">
+    <button class="chip on" data-cat="all">全部</button>
+    <button class="chip" data-cat="core">核心卖点</button>
+    <button class="chip" data-cat="adv">特色功能</button>
+    <button class="chip" data-cat="env">适配与购买</button>
+  </div>
+  <span class="count" id="resultCount"></span>
+</div></div>
+
+<main class="content">
+
+<section class="unit" id="s1" data-cat="core">
+  <div class="group">01 · 软件定位</div>
+  <h2>软件定位</h2>
+  <p>方舟的浮动伤害数字有人爱有人嫌：清野生龙群、南巨守家、炮塔防守时，屏幕上数字层层叠叠，挡视野还晃眼；可另一些玩家就靠数字判断输出和驯服血量。一个服务器装不下两套 UI——以前服主只能二选一，或者手动给个别玩家改设置。</p>
+  <p>「伤害显示开关（DamageDisplayToggle）」把决定权交还给每个玩家：聊天框发 <code>/关闭伤害显示</code> 立刻清静，发 <code>/开启伤害显示</code> 随时找回；设置按 SteamID 存进服务器数据库，重启服务器、换设备登录都记得你的选择。</p>
+  <p>而且伤害数字不是「免费」的：服务器每次伤害都要实时生成数字并同步给客户端，团战、龙群、炮塔齐射时这份开销持续累加。关掉它，画面清爽，服务器也跟着减负。</p>
+</section>
+
+<section class="unit" id="s2" data-cat="env">
+  <div class="group">02 · 适配环境</div>
+  <table class="data-table">
+    <tr><th style="width:150px">项目</th><th>要求</th></tr>
+    <tr><td>操作系统</td><td>Windows</td></tr>
+    <tr><td>服务端插件框架</td><td>ArkApi ≥ 3.5（<code>ArkApi.lib</code>，头文件 <code>API/Ark/Ark.h</code>）</td></tr>
+    <tr><td>数据库</td><td>无需安装：内置 SQLite 引擎（源码直编），数据就是插件目录下的一个文件</td></tr>
+  </table>
+</section>
+
+<div class="card-grid">
+  <div class="unit card" data-cat="core"><div class="icon">📉</div><h4>关数字省开销</h4><p>伤害数字由服务器实时生成下发，大型战斗时关闭即为服务器减负。</p></div>
+  <div class="unit card" data-cat="core"><div class="icon">🎚️</div><h4>每人独立开关</h4><p>两条聊天命令自助切换，服务器同时容纳「爱看数字」和「嫌数字乱」两种玩家。</p></div>
+  <div class="unit card" data-cat="core"><div class="icon">🗄️</div><h4>SteamID 持久化</h4><p>开关状态存 SQLite，重启服务器、重新登录都不丢，免装数据库服务。</p></div>
+  <div class="unit card" data-cat="core"><div class="icon">🎯</div><h4>只影响本人</h4><p>拦截发生在服务器下发环节，不碰伤害数值，不影响任何其他玩家。</p></div>
+  <div class="unit card" data-cat="adv"><div class="icon">✏️</div><h4>命令文本可改名</h4><p>想用英文命令？改一行配置热重载即生效，新旧命令自动平滑交接。</p></div>
+  <div class="unit card" data-cat="adv"><div class="icon">💬</div><h4>文案全配置化</h4><p>提示气泡的文案、字号、时长、颜色全在 config.json 里，不改代码就能换皮肤。</p></div>
+  <div class="unit card" data-cat="adv"><div class="icon">🔄</div><h4>配置热重载</h4><p>控制台 / RCON 一条 Reload 命令，改完配置免重启立即生效。</p></div>
+</div>
+
+<section class="unit" id="s3" data-cat="core">
+  <div class="group">03 · 重点功能</div>
+  <h2>每人独立的伤害数字开关 <span class="badge ok">核心</span></h2>
+  <p><b>什么功能：</b>玩家在游戏内聊天框发送 <code>/开启伤害显示</code> 或 <code>/关闭伤害显示</code>，插件按玩家 SteamID 实时切换：关闭后服务器不再向该玩家的客户端发送浮动伤害数字通知，开启后恢复正常。</p>
+  <p><b>什么作用：</b>拦截点在服务器给玩家发伤害数字通知的 RPC 上，属于「发不发给你」的开关——伤害照常计算和生效，只是不再显示数字；队友、部落成员、附近其他玩家完全不受影响。</p>
+  <p><b>给你的好处：</b>没有它，嫌数字乱的玩家只能忍着或者流失，服主被反复求助。有了它，玩家自己一条命令解决，服主零介入；执行结果还有屏幕气泡反馈，玩家不用猜有没有生效。对服主还有一层实惠：伤害数字是服务器实时生成再发出去的，人多势众的战斗里这是持续的负担——玩家自愿关掉，服务器就省下一份开销。</p>
+</section>
+
+<section class="unit" id="s4" data-cat="core">
+  <div class="group">03 · 重点功能</div>
+  <h2>SQLite 持久化，重启不丢 <span class="badge ok">核心</span></h2>
+  <p><b>什么功能：</b>开关状态以「SteamID → 是否隐藏」写入插件内置的 SQLite 数据库（插件目录下一个 <code>.db</code> 文件）；服务器启动时自动建库建表并载入内存，玩家执行命令时改内存并同步落库。</p>
+  <p><b>什么作用：</b>插件高频的伤害通知路径只查内存表，零数据库开销；数据库文件可随意复制备份、迁移到别的服务器，玩家设置跟着走。SQLite 引擎直接编进插件 DLL，服务器上不需要安装任何数据库软件。</p>
+  <p><b>给你的好处：</b>没有它，玩家每次重进服务器都要重新设置一遍，很快就没人用。有了它，「设置一次、永久有效」；想重置某个玩家，用任意 SQLite 工具删一行即可。</p>
+</section>
+
+<section class="unit" id="s5" data-cat="adv">
+  <div class="group">03 · 重点功能</div>
+  <h2>命令与文案全配置化 <span class="badge">特色</span></h2>
+  <p><b>什么功能：</b>两条玩家命令的文本（默认 <code>/开启伤害显示</code>、<code>/关闭伤害显示</code>）和四条屏幕气泡提示（开启成功、关闭成功、配置重载成功 / 失败）的文案、字号缩放、显示时长、RGBA 颜色，全部集中在 <code>config.json</code>;控制台 / RCON 命令 <code>DamageDisplayToggle.Reload</code> 免重启热重载，命令改名后自动平滑换挂。</p>
+  <p><b>什么作用：</b>想换成 <code>/damageon</code>、<code>/damageoff</code>？想改提示配色配合服务器主题？改配置文件执行一条 Reload 就完成，全程不用碰代码、不用重启服务器。</p>
+  <p><b>给你的好处：</b>没有它，改个提示词都要重新编译发版。有了它，插件界面语言随你定制；配置写错时插件会明确报错指出缺什么，不会带病运行让你猜。</p>
+</section>
+
+<section class="unit" id="s6" data-cat="core">
+  <div class="group">04 · 运行效果</div>
+  <h2>运行效果</h2>
+  <div class="shot">📷 此处应放截图：玩家聊天发送 /关闭伤害显示 后屏幕中央的气泡提示</div>
+  <div class="shot">📷 此处应放截图：关闭伤害显示前后，同一战斗场景的画面对比</div>
+  <div class="shot">📷 此处应放截图：服务器控制台启动横幅与 DamageDisplayToggle.Reload 提示</div>
+</section>
+
+<section class="unit" id="s7" data-cat="env">
+  <div class="group">05 · 价格</div>
+  <h2>价格</h2>
+  <div class="note">本插件<b>完全免费</b>（价格 0），无授权校验，可自由部署在自己运营的服务器上。问题反馈与交流：QQ 711919（依据 <code>Output/PluginInfo.json</code> 的 Description 字段）。</div>
+</section>
+
+<div class="empty hide" id="emptyState">没有匹配的内容，换个关键词或分类试试</div>
+</main>
+
+<footer class="foot">
+  伤害显示开关（DamageDisplayToggle） · 软件简介 · 2026-09
+</footer>
+
+<script>
+(function(){
+var inp=document.getElementById('searchInput');
+var chips=[].slice.call(document.querySelectorAll('.chip'));
+var units=[].slice.call(document.querySelectorAll('.unit'));
+var empty=document.getElementById('emptyState');
+var cnt=document.getElementById('resultCount');
+var cat='all';
+function go(){
+  var q=(inp.value||'').trim().toLowerCase(),n=0;
+  units.forEach(function(u){
+    var okC=(cat=='all'||u.getAttribute('data-cat')==cat);
+    var t=(u.textContent||'').toLowerCase()+(u.getAttribute('data-kw')||'');
+    var okQ=!q||t.indexOf(q)>-1;
+    var s=okC&&okQ;u.classList.toggle('hide',!s);if(s)n++;
+  });
+  [].forEach.call(document.querySelectorAll('.toc a'),function(a){
+    var el=document.getElementById(a.getAttribute('href').slice(1));
+    a.classList.toggle('dim',!(el&&!el.classList.contains('hide')));
+  });
+  empty.classList.toggle('hide',n>0);
+  cnt.textContent=n+' / '+units.length+' 条';
+}
+chips.forEach(function(c){c.addEventListener('click',function(){
+  chips.forEach(function(x){x.classList.remove('on')});c.classList.add('on');
+  cat=c.getAttribute('data-cat');go();
+})});
+inp.addEventListener('input',go);go();
+})();
+</script>
+
+</body>
+</html>
